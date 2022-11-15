@@ -34,7 +34,7 @@ namespace cogdeck.Handlers
             {
                 _statusManager.Status = "Speaking...";
                 await _speechSynthesizer.SpeakTextAsync(input);
-                _statusManager.Status = "Done speaking...";
+                _statusManager.Status = "Done speaking.";
             }
             else
             {

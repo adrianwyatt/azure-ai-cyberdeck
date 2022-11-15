@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace cogdeck.HostedServices
 {
@@ -106,20 +107,43 @@ namespace cogdeck.HostedServices
             }
         }
 
-        
+        private IEnumerable<string> WordWrap(string text, int width)
+        {
+            const string forcedBreakZonePattern = @"\n";
+            const string normalBreakZonePattern = @"\s+|(?<=[-,.;])|$";
 
+            var forcedZones = Regex.Matches(text, forcedBreakZonePattern).Cast<Match>().ToList();
+            var normalZones = Regex.Matches(text, normalBreakZonePattern).Cast<Match>().ToList();
+
+            int start = 0;
+
+            while (start < text.Length)
+            {
+                var zone =
+                    forcedZones.Find(z => z.Index >= start && z.Index <= start + width) ??
+                    normalZones.FindLast(z => z.Index >= start && z.Index <= start + width);
+
+                if (zone == null)
+                {
+                    yield return text.Substring(start, width);
+                    start += width;
+                }
+                else
+                {
+                    yield return text.Substring(start, zone.Index - start);
+                    start = zone.Index + zone.Length;
+                }
+            }
+        }
+        
         private void RenderRightWorkspace()
         {
-            // first split by obvious newlines
-            //rightWorkspaceLines = rightWorkspace.Split(Environment.NewLine).ToList();
-            // then do word wrap
-            for (int i = 0; i < rightWorkspaceLines.Count; i++)
-
-            int line = 0;
+            rightWorkspaceLines = WordWrap(rightWorkspace, Console.BufferWidth / 2 - 2).ToList();
+            
             int maxLines = Console.BufferHeight - 4;
             int workspaceLine = rightScroll;
 
-            for (; line < maxLines && workspaceLine < rightWorkspaceLines.Count; line++)
+            for (int line = 0; line < maxLines && workspaceLine < rightWorkspaceLines.Count; line++)
             {
                 Console.SetCursorPosition(Console.BufferWidth / 2 + 2, line + 2);
                 Console.WriteLine(rightWorkspaceLines[workspaceLine++]);
