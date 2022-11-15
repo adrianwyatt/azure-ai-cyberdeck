@@ -34,6 +34,7 @@ builder.ConfigureServices((context, services) =>
     services.AddSingleton<IHandler, TextToSpeechHandler>();
     services.AddSingleton<IHandler, SentimentHandler>();
     services.AddSingleton<IHandler, TranslatorHandler>();
+    services.AddSingleton<IHandler, OcrHandler>();
     services.AddSingleton<IHandler, RandomHandler>();
     services.AddSingleton<IHandler, ClearHandler>();
 
