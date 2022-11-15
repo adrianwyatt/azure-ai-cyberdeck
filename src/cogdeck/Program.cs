@@ -1,4 +1,6 @@
-﻿using cogdeck.Handlers;
+﻿using cogdeck;
+using cogdeck.Configuration;
+using cogdeck.Handlers;
 using cogdeck.HostedServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,12 +14,7 @@ IHostBuilder builder = Host.CreateDefaultBuilder(args);
 builder.ConfigureLogging((context, builder) =>
 {
     builder.ClearProviders();
-    //builder.AddSimpleConsole(options =>
-    //{
-    //    options.SingleLine = false;
-    //    options.IncludeScopes = false;
-    //    options.TimestampFormat = "hh:mm:ss ";
-    //});
+    builder.AddDebug();
 });
 
 string configurationFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "configuration.json");
@@ -29,10 +26,16 @@ builder.ConfigureAppConfiguration((builder) => builder
 
 builder.ConfigureServices((context, services) =>
 {
-    services.AddSingleton<IHandler, EchoHandler>();
-    services.AddSingleton<IHandler, Echo2Handler>();
+    // Setup configuration options
+    IConfiguration configurationRoot = context.Configuration;
+    services.Configure<AzureCognitiveServicesOptions>(configurationRoot.GetSection("AzureCognitiveServices"));
 
-    
+    services.AddSingleton<IHandler, SpeechToTextHandler>();
+    services.AddSingleton<IHandler, TextToSpeechHandler>();
+    services.AddSingleton<IHandler, RandomHandler>();
+    services.AddSingleton<IHandler, ClearHandler>();
+
+    services.AddSingleton<StatusManager>();
 
     // Add the primary hosted service to start the loop.
     services.AddHostedService<ScreenRenderService>();
