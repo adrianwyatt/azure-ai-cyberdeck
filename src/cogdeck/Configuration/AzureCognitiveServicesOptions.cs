@@ -28,6 +28,10 @@
         /// </remarks>
         public string SpeechSynthesisVoiceName { get; set; }
 
+        public string Endpoint { get; set; }
+
+        public string TranslateToLanguage { get; set; }
+
         /// <summary>
         /// Validate options, throw an exception is any are invalid.
         /// </summary>
@@ -44,6 +48,12 @@
 
             if (string.IsNullOrWhiteSpace(SpeechSynthesisVoiceName))
                 throw new ArgumentException("Argument is invalid.", nameof(SpeechSynthesisVoiceName));
+
+            if (string.IsNullOrWhiteSpace(Endpoint))
+                throw new ArgumentException("Argument is invalid.", nameof(Endpoint));
+
+            if (string.IsNullOrWhiteSpace(TranslateToLanguage))
+                throw new ArgumentException("Argument is invalid.", nameof(TranslateToLanguage));
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using cogdeck.Configuration;
 using Microsoft.CognitiveServices.Speech;
-using Microsoft.CognitiveServices.Speech.Audio;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -30,15 +29,15 @@ namespace cogdeck.Handlers
 
         public async Task<string> Execute(string input,  CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrWhiteSpace(input))
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                _statusManager.Status = "Nothing to speak.";
+            }
+            else
             {
                 _statusManager.Status = "Speaking...";
                 await _speechSynthesizer.SpeakTextAsync(input);
                 _statusManager.Status = "Done speaking.";
-            }
-            else
-            {
-                _statusManager.Status = "Nothing to speak.";
             }
             
             return input;
