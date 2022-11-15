@@ -12,12 +12,12 @@ IHostBuilder builder = Host.CreateDefaultBuilder(args);
 builder.ConfigureLogging((context, builder) =>
 {
     builder.ClearProviders();
-    builder.AddSimpleConsole(options =>
-    {
-        options.SingleLine = false;
-        options.IncludeScopes = false;
-        options.TimestampFormat = "hh:mm:ss ";
-    });
+    //builder.AddSimpleConsole(options =>
+    //{
+    //    options.SingleLine = false;
+    //    options.IncludeScopes = false;
+    //    options.TimestampFormat = "hh:mm:ss ";
+    //});
 });
 
 string configurationFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "configuration.json");

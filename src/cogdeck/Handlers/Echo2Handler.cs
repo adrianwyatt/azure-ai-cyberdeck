@@ -8,6 +8,8 @@ namespace cogdeck.Handlers
 {
     internal class Echo2Handler : IHandler
     {
+        public string MenuTitle => "Echo2";
+
         public Task<string> Execute(string input, CancellationToken cancellationToken)
         {
             string output = input + Environment.NewLine + "echo2";
