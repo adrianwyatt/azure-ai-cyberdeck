@@ -13,18 +13,13 @@ namespace cogdeck.HostedServices
 
         private readonly IList<IHandler> _handlers;
 
-        private int titleHeight = 4;
+        private int titleHeight = 1;
         private int rightScroll = 0;
         private int leftSelect = 0;
         private string rightWorkspace = string.Empty;
         private List<string> rightWorkspaceLines = new List<string>();
         private readonly string title = $"Welcome to Cogdeck v{Assembly.GetEntryAssembly().GetName().Version.Major}.{Assembly.GetEntryAssembly().GetName().Version.Minor}";
         private readonly StatusManager _statusManager;
-
-        private readonly string asciiArtTitle = @"    \                           __|               _ \             |   
-   _ \  _  /  |  |   _| -_)    (      _ \   _` |  |  |  -_)   _|  | / 
- _/  _\ ___| \_,_| _| \___|   \___| \___/ \__, | ___/ \___| \__| _\_\ 
-                                          ____/";
 
         public ScreenRenderService(
             IEnumerable<IHandler> handlers,
@@ -67,13 +62,12 @@ namespace cogdeck.HostedServices
         private void RenderTitle()
         {
             Console.SetCursorPosition(0, 0);
-            //for (int i = 0; i < title.Length; i++)
-            //{
+            for (int i = 0; i < title.Length; i++)
+            {
 
-            //    Console.ForegroundColor = (ConsoleColor)((i % 7) + 9);
-            //    Console.Write(title[i]);
-            //}
-            Console.Write(asciiArtTitle);
+                Console.ForegroundColor = (ConsoleColor)((i % 7) + 9);
+                Console.Write(title[i]);
+            }
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.BackgroundColor = ConsoleColor.Black;
