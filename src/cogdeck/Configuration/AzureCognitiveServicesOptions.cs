@@ -32,6 +32,9 @@
 
         public string TranslateToLanguage { get; set; }
 
+        public string StorageAccountName { get; set; }
+        public string StorageAccountKey { get; set; }
+
         /// <summary>
         /// Validate options, throw an exception is any are invalid.
         /// </summary>

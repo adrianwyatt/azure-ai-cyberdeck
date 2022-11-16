@@ -13,12 +13,18 @@ namespace cogdeck.HostedServices
 
         private readonly IList<IHandler> _handlers;
 
+        private int titleHeight = 4;
         private int rightScroll = 0;
         private int leftSelect = 0;
         private string rightWorkspace = string.Empty;
         private List<string> rightWorkspaceLines = new List<string>();
         private readonly string title = $"Welcome to Cogdeck v{Assembly.GetEntryAssembly().GetName().Version.Major}.{Assembly.GetEntryAssembly().GetName().Version.Minor}";
         private readonly StatusManager _statusManager;
+
+        private readonly string asciiArtTitle = @"    \                           __|               _ \             |   
+   _ \  _  /  |  |   _| -_)    (      _ \   _` |  |  |  -_)   _|  | / 
+ _/  _\ ___| \_,_| _| \___|   \___| \___/ \__, | ___/ \___| \__| _\_\ 
+                                          ____/";
 
         public ScreenRenderService(
             IEnumerable<IHandler> handlers,
@@ -46,6 +52,7 @@ namespace cogdeck.HostedServices
             bool keepGoing = true;
             while (keepGoing)
             {
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.Clear();
                 
                 RenderTitle();
@@ -60,17 +67,26 @@ namespace cogdeck.HostedServices
         private void RenderTitle()
         {
             Console.SetCursorPosition(0, 0);
-            Console.Write(title);
+            //for (int i = 0; i < title.Length; i++)
+            //{
+
+            //    Console.ForegroundColor = (ConsoleColor)((i % 7) + 9);
+            //    Console.Write(title[i]);
+            //}
+            Console.Write(asciiArtTitle);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.BackgroundColor = ConsoleColor.Black;
         }
 
-        private static void RenderSplitLines()
+        private void RenderSplitLines()
         {
             for (int i = 0; i < Console.BufferWidth; i++)
             {
-                Console.SetCursorPosition(i, 1);
+                Console.SetCursorPosition(i, titleHeight);
                 Console.Write('-');
             }
-            for (int i = 2; i < Console.BufferHeight - 2; i++)
+            for (int i = titleHeight + 1; i < Console.BufferHeight - 2; i++)
             {
                 Console.SetCursorPosition((Console.BufferWidth / 2), i);
                 Console.Write('|');
@@ -145,7 +161,7 @@ namespace cogdeck.HostedServices
 
             for (int line = 0; line < maxLines && workspaceLine < rightWorkspaceLines.Count; line++)
             {
-                Console.SetCursorPosition(Console.BufferWidth / 2 + 2, line + 2);
+                Console.SetCursorPosition(Console.BufferWidth / 2 + 2, line + titleHeight);
                 Console.WriteLine(rightWorkspaceLines[workspaceLine++]);
             }
         }
@@ -155,13 +171,22 @@ namespace cogdeck.HostedServices
             int line = 0;
             foreach (IHandler handler in _handlers)
             {
-                Console.SetCursorPosition(0, line + 2);
+                Console.SetCursorPosition(0, line + titleHeight + 1);
                 if (line == leftSelect)
                 {
-                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.BackgroundColor = ConsoleColor.DarkGreen;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.BackgroundColor = ConsoleColor.Black;
                 }
                 Console.WriteLine(handler.MenuTitle);
+                
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.BackgroundColor = ConsoleColor.Black;
+                
                 line++;
             }
         }
