@@ -1,8 +1,5 @@
 ﻿using Azure;
 using Azure.AI.FormRecognizer.DocumentAnalysis;
-using Azure.Storage;
-using Azure.Storage.Blobs;
-using Azure.Storage.Sas;
 using cogdeck.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,7 +10,7 @@ namespace cogdeck.Handlers
 {
     internal class OcrHandler : IHandler
     {
-        public string MenuTitle => "Read Document";
+        public string MenuTitle => "Read from Camera (OCR)";
         private readonly StatusManager _statusManager;
         private readonly AzureCognitiveServicesOptions _options;
         private readonly ILogger _logger;
