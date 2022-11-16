@@ -60,8 +60,8 @@ namespace cogdeck.Handlers
                 "ocr-snaphot.jpg");
 
             // TODO windows debug
-            filePath = @"C:\Users\adribona\OneDrive - Microsoft\Pictures\Camera Roll\WIN_20221115_15_51_12_Pro.jpg";
-            //CaptureCameraStill(filePath);
+            //filePath = @"C:\Users\adribona\OneDrive - Microsoft\Pictures\Camera Roll\WIN_20221115_15_51_12_Pro.jpg";
+            CaptureCameraStill(filePath);
 
             _blobContainerClient.DeleteBlobIfExists("ocr-capture.jpg");
             _blobContainerClient.UploadBlob("ocr-capture.jpg", File.OpenRead(filePath));

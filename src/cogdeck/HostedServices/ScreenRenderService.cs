@@ -155,7 +155,7 @@ namespace cogdeck.HostedServices
 
             for (int line = 0; line < maxLines && workspaceLine < rightWorkspaceLines.Count; line++)
             {
-                Console.SetCursorPosition(Console.BufferWidth / 2 + 2, line + titleHeight);
+                Console.SetCursorPosition(Console.BufferWidth / 2 + 2, line + titleHeight + 1);
                 Console.WriteLine(rightWorkspaceLines[workspaceLine++]);
             }
         }
