@@ -5,12 +5,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace cogdeck.Handlers
 {
     internal class OcrHandler : IHandler
     {
-        public string MenuTitle => "Read from Camera (OCR)";
+        public string MenuTitle => "Camera Capture (OCR)";
         private readonly StatusManager _statusManager;
         private readonly AzureCognitiveServicesOptions _options;
         private readonly ILogger _logger;
@@ -18,7 +19,7 @@ namespace cogdeck.Handlers
         private readonly DocumentAnalysisClient _client;
 
         public OcrHandler(
-            ILogger<SpeechToTextHandler> logger,
+            ILogger<OcrHandler> logger,
             IOptions<AzureCognitiveServicesOptions> options,
             StatusManager statusManager)
         {
@@ -36,11 +37,17 @@ namespace cogdeck.Handlers
             string filePath = Path.Combine(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                 "ocr-snaphot.jpg");
-
-            // TODO windows debug
-            //filePath = @"C:\Users\adribona\OneDrive - Microsoft\Pictures\Camera Roll\WIN_20221115_15_51_12_Pro.jpg";
+            
             _statusManager.Status = "Capturing image...";
-            CaptureCameraStill(filePath);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                // TODO DEBUG Windows pre-captured 
+                filePath = @"C:\Users\adribona\OneDrive - Microsoft\Pictures\Camera Roll\WIN_20221115_15_51_12_Pro.jpg";
+            }
+            else
+            {
+                CaptureCameraStillRPi(filePath);
+            }
 
             // Analyze the URL image 
             _statusManager.Status = "Anaylzing image...";
@@ -49,7 +56,7 @@ namespace cogdeck.Handlers
                 "prebuilt-read",
                 File.OpenRead(filePath));
 
-            _statusManager.Status = "Anaylzing completed.";
+            _statusManager.Status = "Analysis complete.";
             AnalyzeResult result = operation.Value;
             input = input += result.Content;
 
@@ -58,7 +65,7 @@ namespace cogdeck.Handlers
             return input;
         }
 
-        private static void CaptureCameraStill(string filepath)
+        private static void CaptureCameraStillRPi(string filepath)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo()
             {

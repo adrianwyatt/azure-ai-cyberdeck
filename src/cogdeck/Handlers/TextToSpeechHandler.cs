@@ -7,37 +7,56 @@ namespace cogdeck.Handlers
 {
     internal class TextToSpeechHandler : IHandler
     {
-        public string MenuTitle => "Text-to-Speech";
+        public string MenuTitle => $"Text-to-speech ({_languageManager.Get().Language})";
         private readonly StatusManager _statusManager;
+        private readonly LanguageManager _languageManager;
         private readonly AzureCognitiveServicesOptions _options;
-        private readonly SpeechSynthesizer _speechSynthesizer;
         private readonly ILogger _logger;
-
+        private readonly SemaphoreSlim _synthesizingCompleted = new SemaphoreSlim(1, 1);
+        
         public TextToSpeechHandler(
-            ILogger<SpeechToTextHandler> logger,
+            ILogger<TextToSpeechHandler> logger,
             IOptions<AzureCognitiveServicesOptions> options,
-            StatusManager statusManager)
+            StatusManager statusManager,
+            LanguageManager languageManager)
         {
             _logger = logger;
             _statusManager = statusManager;
             _options = options.Value;
-
-            SpeechConfig speechConfig = SpeechConfig.FromSubscription(_options.Key, _options.Region);
-            speechConfig.SpeechSynthesisVoiceName = _options.SpeechSynthesisVoiceName;
-            _speechSynthesizer = new SpeechSynthesizer(speechConfig);
+            _languageManager = languageManager;
         }
 
         public async Task<string> Execute(string input,  CancellationToken cancellationToken)
         {
+            SpeechConfig speechConfig = SpeechConfig.FromSubscription(_options.Key, _options.Region);
+            speechConfig.SpeechSynthesisVoiceName = _languageManager.Get().Voice;
+            SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer(speechConfig);
+            speechSynthesizer.SynthesisCompleted += (sender, e) => _synthesizingCompleted.Release();
+            speechSynthesizer.SynthesisStarted += (sender, e) => _synthesizingCompleted.Wait();
+
             if (string.IsNullOrWhiteSpace(input))
             {
                 _statusManager.Status = "Nothing to speak.";
             }
             else
             {
-                _statusManager.Status = "Speaking...";
-                await _speechSynthesizer.SpeakTextAsync(input);
-                _statusManager.Status = "Done speaking.";
+                await speechSynthesizer.StartSpeakingTextAsync(input);
+                
+                _statusManager.Status = "Press button to stop speaking...";
+                // Wait for either a key to be pressed or the synthesizing to complete normally.
+                int stopReason = Task.WaitAny(
+                    Task.Run(() => Console.ReadKey()), 
+                    _synthesizingCompleted.WaitAsync());
+
+                if (stopReason == 0)
+                {
+                    await speechSynthesizer.StopSpeakingAsync();
+                    _statusManager.Status = "Speaking stopped.";
+                }
+                else
+                {
+                    _statusManager.Status = "Speaking completed.";
+                }
             }
             
             return input;

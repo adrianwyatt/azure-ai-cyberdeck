@@ -30,11 +30,6 @@
 
         public string Endpoint { get; set; }
 
-        public string TranslateToLanguage { get; set; }
-
-        public string StorageAccountName { get; set; }
-        public string StorageAccountKey { get; set; }
-
         /// <summary>
         /// Validate options, throw an exception is any are invalid.
         /// </summary>
@@ -54,9 +49,6 @@
 
             if (string.IsNullOrWhiteSpace(Endpoint))
                 throw new ArgumentException("Argument is invalid.", nameof(Endpoint));
-
-            if (string.IsNullOrWhiteSpace(TranslateToLanguage))
-                throw new ArgumentException("Argument is invalid.", nameof(TranslateToLanguage));
         }
     }
 }

@@ -8,23 +8,25 @@ namespace cogdeck.Handlers
 {
     internal class TranslatorHandler : IHandler
     {
-        public string MenuTitle => "Translate";
+        public string MenuTitle => $"Translate ({_languageManager.Get().Language}->{_languageManager.PeekNext().Language})";
         private readonly StatusManager _statusManager;
         private readonly AzureCognitiveServicesOptions _options;
         private readonly ILogger _logger;
 
-        private static readonly string _translatorGlobalEndpoint = "https://api.cognitive.microsofttranslator.com";
-        
+        private const string _translatorGlobalEndpoint = "https://api.cognitive.microsofttranslator.com";
+
+        private readonly LanguageManager _languageManager;
 
         public TranslatorHandler(
-            ILogger<SpeechToTextHandler> logger,
+            ILogger<TranslatorHandler> logger,
             IOptions<AzureCognitiveServicesOptions> options,
-            StatusManager statusManager)
+            StatusManager statusManager,
+            LanguageManager languageManager)
         {
             _logger = logger;
             _statusManager = statusManager;
             _options = options.Value;
-
+            _languageManager = languageManager;
         }
 
         public async Task<string> Execute(string input, CancellationToken cancellationToken)
@@ -38,7 +40,7 @@ namespace cogdeck.Handlers
             _statusManager.Status = "Translating...";
 
             // Input and output languages are defined as parameters.
-            string route = $"/translate?api-version=3.0&from=en&to={_options.TranslateToLanguage}";
+            string route = $"/translate?api-version=3.0&from={_languageManager.Get().Language}&to={_languageManager.PeekNext().Language}";
             object[] body = new object[] { new { Text = input } };
             string requestBody = JsonConvert.SerializeObject(body);
 
@@ -60,6 +62,7 @@ namespace cogdeck.Handlers
             TranslatorResponse[] translationResponses = JsonConvert.DeserializeObject<TranslatorResponse[]>(result);
             
             _statusManager.Status = "Translation complete.";
+            _languageManager.Cycle();
             return translationResponses[0].translations[0].text;
         }
     }

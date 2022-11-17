@@ -30,15 +30,17 @@ builder.ConfigureServices((context, services) =>
     IConfiguration configurationRoot = context.Configuration;
     services.Configure<AzureCognitiveServicesOptions>(configurationRoot.GetSection("AzureCognitiveServices"));
 
-    //services.AddSingleton<IHandler, SpeechToTextHandler>();
-    //services.AddSingleton<IHandler, TextToSpeechHandler>();
-    //services.AddSingleton<IHandler, SentimentHandler>();
-    //services.AddSingleton<IHandler, TranslatorHandler>();
-    services.AddSingleton<IHandler, OcrHandler>();
-    services.AddSingleton<IHandler, RandomHandler>();
-    services.AddSingleton<IHandler, ClearHandler>();
-
     services.AddSingleton<StatusManager>();
+    services.AddSingleton<LanguageManager>();
+    
+    services.AddSingleton<IHandler, SpeechToTextHandler>();
+    services.AddSingleton<IHandler, TextToSpeechHandler>();
+    services.AddSingleton<IHandler, TranslatorHandler>();
+    services.AddSingleton<IHandler, SentimentHandler>();
+    services.AddSingleton<IHandler, OcrHandler>();
+    //services.AddSingleton<IHandler, RandomHandler>();
+    services.AddSingleton<IHandler, LanguageHandler>();
+    services.AddSingleton<IHandler, ClearHandler>();
 
     // Add the primary hosted service to start the loop.
     services.AddHostedService<ScreenRenderService>();
