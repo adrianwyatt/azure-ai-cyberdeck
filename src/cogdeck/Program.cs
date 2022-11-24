@@ -39,7 +39,7 @@ builder.ConfigureServices((context, services) =>
     services.AddSingleton<IHandler, SentimentHandler>();
     services.AddSingleton<IHandler, OcrHandler>();
     //services.AddSingleton<IHandler, RandomHandler>();
-    services.AddSingleton<IHandler, LanguageHandler>();
+    //services.AddSingleton<IHandler, LanguageHandler>();
     services.AddSingleton<IHandler, ClearHandler>();
 
     // Add the primary hosted service to start the loop.
