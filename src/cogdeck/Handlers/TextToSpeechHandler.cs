@@ -28,6 +28,12 @@ namespace cogdeck.Handlers
 
         public async Task<string> Execute(string input,  CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                _statusManager.Status = "Nothing to speak.";
+                return input;
+            }
+
             SpeechConfig speechConfig = SpeechConfig.FromSubscription(_options.Key, _options.Region);
             speechConfig.SpeechSynthesisVoiceName = _languageManager.Get().Voice;
             SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer(speechConfig);

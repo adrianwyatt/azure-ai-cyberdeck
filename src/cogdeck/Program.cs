@@ -29,6 +29,7 @@ builder.ConfigureServices((context, services) =>
     // Setup configuration options
     IConfiguration configurationRoot = context.Configuration;
     services.Configure<AzureCognitiveServicesOptions>(configurationRoot.GetSection("AzureCognitiveServices"));
+    services.Configure<AzureContentSafetyOptions>(configurationRoot.GetSection("ContentSafety"));
 
     services.AddSingleton<StatusManager>();
     services.AddSingleton<LanguageManager>();
@@ -37,6 +38,8 @@ builder.ConfigureServices((context, services) =>
     services.AddSingleton<IHandler, TextToSpeechHandler>();
     services.AddSingleton<IHandler, TranslatorHandler>();
     services.AddSingleton<IHandler, SentimentHandler>();
+    services.AddSingleton<IHandler, SummarizeHandler>();
+    services.AddSingleton<IHandler, ContentSafetyHandler>();
     services.AddSingleton<IHandler, OcrHandler>();
     //services.AddSingleton<IHandler, RandomHandler>();
     //services.AddSingleton<IHandler, LanguageHandler>();

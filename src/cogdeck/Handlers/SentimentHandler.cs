@@ -16,7 +16,7 @@ namespace cogdeck.Handlers
         private readonly TextAnalyticsClient _textAnalyticsClient;
 
         public SentimentHandler(
-            ILogger<SpeechToTextHandler> logger,
+            ILogger<SentimentHandler> logger,
             IOptions<AzureCognitiveServicesOptions> options,
             StatusManager statusManager)
         {
@@ -27,16 +27,24 @@ namespace cogdeck.Handlers
             _textAnalyticsClient = new TextAnalyticsClient(new Uri(_options.Endpoint), new AzureKeyCredential(_options.Key));
         }
 
-        public Task<string> Execute(string input,  CancellationToken cancellationToken)
+        public async Task<string> Execute(string input,  CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                _statusManager.Status = "Nothing to analyze sentiment.";
+                return input;
+            }
+
             _statusManager.Status = "Analyzing sentiment...";
             
-            Response<DocumentSentiment> response = _textAnalyticsClient.AnalyzeSentiment(
+            Response<DocumentSentiment> response = await _textAnalyticsClient.AnalyzeSentimentAsync(
                 document:input,
+                //language:"en", // TODO
+                options:new AnalyzeSentimentOptions {  IncludeOpinionMining = false },                
                 cancellationToken:cancellationToken);
 
             _statusManager.Status = $"Sentimate is {response.Value.Sentiment}.";
-            return Task.FromResult(input);
+            return input;
         }
     }
 }

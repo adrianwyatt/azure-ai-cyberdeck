@@ -15,5 +15,10 @@
     "SpeechRecognitionLanguage": "en-US",
     // For a list of available voices, see: https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support?tabs=stt-tts#text-to-speech
     "SpeechSynthesisVoiceName": "en-US-DavisNeural"
+  },
+  "ContentSafety": {  
+    "Endpoint": "", // dotnet user-secrets set "ContentSafety:Endpoint" "****"
+    "Key": "", // dotnet user-secrets set "ContentSafety:Key" "****"
+    "Region": "" // dotnet user-secrets set "ContentSafety:Region" "****"
   }
 }
