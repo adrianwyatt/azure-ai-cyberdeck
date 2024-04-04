@@ -1,8 +1,7 @@
-﻿using cogdeck.Handlers;
-using Microsoft.Extensions.Hosting;
-using System.Linq.Expressions;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.RegularExpressions;
+using cogdeck.Handlers;
+using Microsoft.Extensions.Hosting;
 
 namespace cogdeck.HostedServices
 {

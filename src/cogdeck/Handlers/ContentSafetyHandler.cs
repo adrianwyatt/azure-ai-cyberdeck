@@ -42,10 +42,7 @@ namespace cogdeck.Handlers
 
             Response<AnalyzeTextResult> response = await _contentSafetyClient.AnalyzeTextAsync(new AnalyzeTextOptions(input));
 
-            _statusManager.Status = $"Hate: {response.Value.HateResult?.Severity ?? 0}, " + 
-                $"SelfHarm: {response.Value.SelfHarmResult?.Severity ?? 0}, " +
-                $"Sexual: {response.Value.SexualResult?.Severity ?? 0}, " +
-                $"Violence: {response.Value.ViolenceResult?.Severity ?? 0}"; 
+            _statusManager.Status = string.Join(", ", response.Value.CategoriesAnalysis.Select(c => $"{c.Category}: {c.Severity}"));
             return input;
         }
     }
