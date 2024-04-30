@@ -13,9 +13,9 @@ namespace cogdeck.Handlers
     {
         public string MenuTitle => "Speech-to-Text";
         private readonly StatusManager _statusManager;
-        private readonly AzureCognitiveServicesOptions _options;
+        private readonly AzureAiServicesOptions _options;
         private readonly AudioConfig _audioConfig;
-        private readonly SpeechRecognizer _speechRecognizer;
+        private readonly LanguageManager _languageManager;
         private readonly ILogger _logger;
 
         /// <summary>
@@ -23,23 +23,17 @@ namespace cogdeck.Handlers
         /// </summary>
         public SpeechToTextHandler(
             ILogger<SpeechToTextHandler> logger,
-            IOptions<AzureCognitiveServicesOptions> options,
+            IOptions<AzureAiServicesOptions> options,
+            LanguageManager languageManager,
             StatusManager statusManager)
         {
             _logger = logger;
             _statusManager = statusManager;
+            _languageManager = languageManager;
             _options = options.Value;
-
-            // Create a speech recognizer
-            SpeechConfig speechConfig = SpeechConfig.FromSubscription(_options.Key, _options.Region);
-            speechConfig.SpeechRecognitionLanguage = _options.SpeechRecognitionLanguage;
-
+            
             // Create an audio configuration
             _audioConfig = AudioConfig.FromDefaultMicrophoneInput();
-            _speechRecognizer = new SpeechRecognizer(speechConfig, _audioConfig);
-
-            // Set the post processing option
-            speechConfig.SetProperty(PropertyId.SpeechServiceResponse_PostProcessingOption, "2");
         }
 
         /// <summary>
@@ -47,9 +41,15 @@ namespace cogdeck.Handlers
         /// </summary>
         public async Task<string> Execute(string input, CancellationToken cancellationToken)
         {
+            // Create a speech recognizer for the current language.
+            SpeechConfig speechConfig = SpeechConfig.FromSubscription(_options.Key, _options.Region);
+            speechConfig.SpeechRecognitionLanguage = _languageManager.Get().Language;
+            speechConfig.SetProperty(PropertyId.SpeechServiceResponse_PostProcessingOption, "2");
+            SpeechRecognizer speechRecognizer = new SpeechRecognizer(speechConfig, _audioConfig);
+
             string? recognizedText = null;
             _statusManager.Status = "Started listening...";
-            SpeechRecognitionResult result = await _speechRecognizer.RecognizeOnceAsync();
+            SpeechRecognitionResult result = await speechRecognizer.RecognizeOnceAsync();
             switch (result.Reason)
             {
                 case ResultReason.RecognizedSpeech:

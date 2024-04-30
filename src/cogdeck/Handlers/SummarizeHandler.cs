@@ -12,7 +12,7 @@ namespace cogdeck.Handlers
     {
         public string MenuTitle => "Summarize";
         private readonly StatusManager _statusManager;
-        private readonly AzureCognitiveServicesOptions _options;
+        private readonly AzureAiServicesOptions _options;
 
         private readonly TextAnalyticsClient _textAnalyticsClient;
 
@@ -20,7 +20,7 @@ namespace cogdeck.Handlers
         /// Initializes a new instance of the <see cref="SummarizeHandler"/> class.
         /// </summary>
         public SummarizeHandler(
-            IOptions<AzureCognitiveServicesOptions> options,
+            IOptions<AzureAiServicesOptions> options,
             StatusManager statusManager)
         {
             _statusManager = statusManager;

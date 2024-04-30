@@ -17,7 +17,7 @@ namespace cogdeck.Handlers
 
         public string MenuTitle => $"Translate ({_languageManager.Get().Language}->{_languageManager.PeekNext().Language})";
         private readonly StatusManager _statusManager;
-        private readonly AzureCognitiveServicesOptions _options;
+        private readonly AzureAiServicesOptions _options;
 
         private readonly LanguageManager _languageManager;
 
@@ -25,7 +25,7 @@ namespace cogdeck.Handlers
         /// Initializes a new instance of the <see cref="TranslatorHandler"/> class.
         /// </summary>
         public TranslatorHandler(
-            IOptions<AzureCognitiveServicesOptions> options,
+            IOptions<AzureAiServicesOptions> options,
             StatusManager statusManager,
             LanguageManager languageManager)
         {

@@ -33,7 +33,7 @@ builder.ConfigureServices((context, services) =>
 {
     // Setup configuration options
     IConfiguration configurationRoot = context.Configuration;
-    services.Configure<AzureCognitiveServicesOptions>(configurationRoot.GetSection("AzureCognitiveServices"));
+    services.Configure<AzureAiServicesOptions>(configurationRoot.GetSection("AzureAiServices"));
     services.Configure<AzureContentSafetyOptions>(configurationRoot.GetSection("ContentSafety"));
     services.Configure<LanguageOptions>(configurationRoot.GetSection("LanguageManager"));
 

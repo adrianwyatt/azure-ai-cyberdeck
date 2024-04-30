@@ -16,7 +16,7 @@ namespace cogdeck.Handlers
     {
         public string MenuTitle => "Camera Capture (OCR)";
         private readonly StatusManager _statusManager;
-        private readonly AzureCognitiveServicesOptions _options;
+        private readonly AzureAiServicesOptions _options;
         private readonly ILogger _logger;
 
         private readonly DocumentAnalysisClient _client;
@@ -26,7 +26,7 @@ namespace cogdeck.Handlers
         /// </summary>
         public OcrHandler(
             ILogger<OcrHandler> logger,
-            IOptions<AzureCognitiveServicesOptions> options,
+            IOptions<AzureAiServicesOptions> options,
             StatusManager statusManager)
         {
             _logger = logger;

@@ -12,11 +12,11 @@ namespace cogdeck.Handlers
         public string MenuTitle => $"Text-to-speech ({_languageManager.Get().Language})";
         private readonly StatusManager _statusManager;
         private readonly LanguageManager _languageManager;
-        private readonly AzureCognitiveServicesOptions _options;
+        private readonly AzureAiServicesOptions _options;
         private readonly SemaphoreSlim _synthesizingCompleted = new SemaphoreSlim(1, 1);
 
         public TextToSpeechHandler(
-            IOptions<AzureCognitiveServicesOptions> options,
+            IOptions<AzureAiServicesOptions> options,
             StatusManager statusManager,
             LanguageManager languageManager)
         {

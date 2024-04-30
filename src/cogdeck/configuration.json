@@ -8,13 +8,10 @@
     }
   },
 
-  "AzureCognitiveServices": {
-    "Endpoint": "", // dotnet user-secrets set "AzureCognitiveServices:Endpoint" "****"
-    "Key": "", // dotnet user-secrets set "AzureCognitiveServices:Key" "****"
-    "Region": "", // dotnet user-secrets set "AzureCognitiveServices:Region" "****"
-    "SpeechRecognitionLanguage": "en-US",
-    
-    "SpeechSynthesisVoiceName": "en-US-DavisNeural"
+  "AzureAiServices": {
+    "Endpoint": "", // dotnet user-secrets set "AzureAiServices:Endpoint" "****"
+    "Key": "", // dotnet user-secrets set "AzureAiServices:Key" "****"
+    "Region": "", // dotnet user-secrets set "AzureAiServices:Region" "****"
   },
   "ContentSafety": {
     "Endpoint": "", // dotnet user-secrets set "ContentSafety:Endpoint" "****"
