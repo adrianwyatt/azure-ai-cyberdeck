@@ -1,26 +1,16 @@
 ﻿{
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft": "Warning",
-      "Microsoft.Hosting.Lifetime": "Warning",
-      "System.Net.Http.HttpClient": "Warning"
-    }
-  },
-
+  // See the README for information on setting the Azure AI Services key.
   "AzureAiServices": {
-    "Endpoint": "", // dotnet user-secrets set "AzureAiServices:Endpoint" "****"
-    "Key": "", // dotnet user-secrets set "AzureAiServices:Key" "****"
-    "Region": "", // dotnet user-secrets set "AzureAiServices:Region" "****"
+    "Endpoint": "https://{Your AI Resource Name}.cognitiveservices.azure.com/", // (e.g. https://ai-cogdeck-wus2-001.cognitiveservices.azure.com/)
+    "Region": "{Your Resource Region}" // (e.g. WestUS2)
   },
+  // See the README for information on setting the Azure Content Safety key.
   "ContentSafety": {
-    "Endpoint": "", // dotnet user-secrets set "ContentSafety:Endpoint" "****"
-    "Key": "", // dotnet user-secrets set "ContentSafety:Key" "****"
-    "Region": "" // dotnet user-secrets set "ContentSafety:Region" "****"
+    "Endpoint": "https://{Your Safety Resource Name}.cognitiveservices.azure.com/", // (e.g. https://ai-cogdeck-wus2-001-safety.cognitiveservices.azure.com/)
+    "Region": "{Your Resource Region}" // (e.g. WestUS2)
   },
   "LanguageManager": {
-    // For a list of available voices, see: https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support?tabs=stt-tts#text-to-speech
-    // Or use https://speech.microsoft.com/portal/voicegallery to preview voices
+    // For a list of available text-to-speech voices, see: https://learn.microsoft.com/azure/ai-services/speech-service/language-support?tabs=tts#text-to-speech
     "Languages": [
       {
         "Language": "en",
@@ -48,5 +38,13 @@
         "Voice": "it-IT-DiegoNeural"
       }
     ]
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Warning",
+      "System.Net.Http.HttpClient": "Warning"
+    }
   }
 }

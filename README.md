@@ -1,2 +1,115 @@
-# azure-cog-cyberdeck
-A keyboard-less cyberdeck for Azure Cognitive Services
+# Cogdeck: An Azure AI Services Cyberdeck
+The Cogdeck is a relatively simple [cyberdeck](https://hackaday.com/2022/10/13/2022-cyberdeck-contest-picking-the-best-of-the-best/) to showcase the capabilities of Azure AI services. The version presented is built using a [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) and a [7-inch display](https://www.raspberrypi.com/products/raspberry-pi-touch-display/), though it can run on any system supporting [dotnet 8+](https://dotnet.microsoft.com/en-us/download/dotnet/8.0), such as Linux/Raspbian, macOS, and Windows. It can be equipped with a [camera module](https://www.raspberrypi.com/products/camera-module-3/), a microphone, and a speaker to enable interaction with the AI services.
+
+This repository includes the application, 3D models for the case, hardware list, and general instructions to build the Cogdeck.
+
+![Cogdeck](./cogdeck.png)
+
+Read time: __ minutes
+Build time: __ minutes
+
+Cost:
+- **Hardware**  - Raspberry Pi 4 ([adafruit](https://www.adafruit.com/product/4295)), $35-$75
+  - Pi Foundation 7" display  ([adafruit](https://www.adafruit.com/product/2718])), $80 (*most any display should work*)
+  - Momentary button
+  - Momentary bi-directional toggle
+- **Software**
+  - [Azure AI Services](https://azure.microsoft.com/en-us/products/ai-services/) - FREE!
+	- Speech-to-text, up to 5 audio hours per month
+	- Text-to-speech, up to 500,000 characters per month
+	- Translation, up to 2,000,000 characters per month
+	- Content Safety, up to 5,000,000 characters per month (in blocks of 1000)
+	- Sentiment analysis, up to 5,000,000 characters per month (in blocks of 1000)
+	- Summarization, up to 5,000,000 characters per month (in blocks of 1000)
+	
+# Setup
+## Azure Account
+Create an Azure account, if you don't have one already.
+1. In a web browser, navigate to https://azure.microsoft.com/free and click on `Free` or `Pay-as-you-go`.
+1. Sign in with your Microsoft or GitHub account.
+1. After signing in, you will be prompted to enter some information.
+   > Even though this is a free account, Azure may require credit card information. You will not be charged unless you change settings later.
+
+## Azure AI Services
+> Azure AI Services was formally called "Azure Cognitive Services", so you still may see that term in some places.
+
+1. Sign into your Azure account at https://portal.azure.com.
+1. In the top-left menu, select `Create a resource`.
+1. Under `Categories`, select `AI + Machine Learning`.
+1. Look for `Azure AI Services` and click on `Create`.
+1. Select a subscription. You will likely only have one to choose from.
+1. For the resource group, select `Create new` and choose a name (e.g. "rg-cogdeck-001"). Make a note of this name for later.
+   > Naming things is hard, see [Azure Naming Conventions](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) for recommendations.
+1. Select an appropriate region (e.g. "WestUS2"). See [Products-by-region](https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/?products=cognitive-services) for feature availability.
+   > Regions only applies to regional AI services - some services are considered global and regionality will not apply.
+1. Choose a name for your resource (e.g. "ai-cogdeck-wus2-001").
+   > Naming things is still hard, see [Azure Naming Conventions](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) for recommendations.
+1. Select a pricing tier, accept the terms, and click on `Review + Create`.
+1. After validation passes, click Create.
+1. When deployment has completed (usually in a few seconds), click `Go to resource` to view your Azure AI Services resource.
+1. On the left side navigation bar, expand `Resourse Management`, then select `Keys and Endpoint`.
+1. Copy either of the two keys, the location/region, and endpoint. Save these values in a secure location for later.
+
+## Azure Content Safety
+1. Sign into your Azure account at https://portal.azure.com.
+1. In the top-left menu, select `Create a resource`.
+1. In the seach box, type in `content safety` and select `Azure AI Content Safety`.
+1. On the next screen, find the box labeled `Azure AI Content Safety` and click on `Create`.
+1. Select a subscription. You will likely only have one to choose from.
+1. For the resource group, select the resource group you created before (e.g. "rg-cogdeck-001").
+1. Select an appropriate region (e.g. "WestUS2").
+1. Choose a name for your resource (e.g. "ai-cogdeck-wus2-001-safety").
+   > Naming things is still hard, see [Azure Naming Conventions](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) for recommendations.
+1. Select a pricing tier, accept the terms, and click on `Review + Create`.
+1. After validation passes, click Create.
+1. When deployment has completed (usually in a few seconds), click `Go to resource` to view your Azure AI Services resource.
+1. On the left side navigation bar, expand `Resourse Management`, then select `Keys and Endpoint`.
+1. Copy either of the two keys, the location/region, and endpoint. Save these values in a secure location for later.
+
+## Raspberry PI (optional)
+The Cogdeck software works on any system supporting dotnet 8+, such as Linux, Raspberry PI OS, macOS, and Windows.
+**If** you will be using a Raspberry PI for your Cogdeck, check out [Getting Started with your Raspberry PI](https://www.raspberrypi.com/documentation/computers/getting-started.html) for setup.
+We recommend using the [Raspberry PI OS](https://www.raspberrypi.com/software/) as your operating system.
+
+# The Code
+## 1. Code Configuration
+1. On the Raspberry Pi or your PC, open a command-line terminal.
+1. Install .NET 8 SDK.
+   - For Raspberry Pi and Linux:
+     ```bash
+     curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 8.0
+     ``` 
+     After installation is complete (it may take a few minutes), add dotnet to the command search paths.
+     ```bash
+     echo 'export DOTNET_ROOT=$HOME/.dotnet' >> ~/.bashrc
+     echo 'export PATH=$PATH:$HOME/.dotnet' >> ~/.bashrc
+     source ~/.bashrc
+     ```
+     Verify dotnet was installed successfully by checking the version.
+     ```bash
+     dotnet --version
+     ```
+   - For Windows, go to https://aka.ms/maker/dotnet/download, under .NET 8.0 click `Download .NET SDK x64`, and run the installer.
+1. Clone the repo.
+   ```bash
+   git clone https://github.com/adrianwyatt/azure-ai-cyberdeck.git
+   ```
+1. Set your Azure service keys, endpoints, and regions.
+   > You may set alternatively your endpoints and regions in the `configuration.json` file. 
+     **Never store your keys in this file or any file in a repository.** If you accidentally expose an Azure service key, you should invalidate the exposed key by regenerating them on the `Keys and Endpoint` page of your resource.
+   ```bash
+   cd ~/azure-cog-cyberdeck/src/cogdeck
+   dotnet user-secrets set "AzureAiServices:Key" "{Your AI Services key}"
+   dotnet user-secrets set "AzureAiServices:Endpoint" "{Your AI Services endpoint}"
+   dotnet user-secrets set "AzureAiServices:Region" "{Your AI Services region}"
+   dotnet user-secrets set "ContentSafety:Key" "{Your Content Safety key}"
+   dotnet user-secrets set "ContentSafety:Endpoint" "{Your Content Safety endpoint}"
+   dotnet user-secrets set "ContentSafety:Region" "{Your Content Safety region}"
+   ```
+1. Build and run the code!
+   ```bash
+   cd ~/azure-cog-cyberdeck/src/cogdeck
+   dotnet build
+   dotnet run
+   ```
+
