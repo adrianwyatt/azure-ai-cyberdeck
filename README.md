@@ -96,7 +96,8 @@ We recommend using the [Raspberry PI OS](https://www.raspberrypi.com/software/) 
    ```
 1. Set your Azure service keys, endpoints, and regions.
    > You may set alternatively your endpoints and regions in the `configuration.json` file. 
-     **Never store your keys in this file or any file in a repository.** If you accidentally expose an Azure service key, you should invalidate the exposed key by regenerating them on the `Keys and Endpoint` page of your resource.
+   
+   > **Never store your keys in this file or any file in a repository.** If you accidentally expose an Azure service key, invalidate the exposed key by regenerating them on the `Keys and Endpoint` page of your resource.
    ```bash
    cd ~/azure-cog-cyberdeck/src/cogdeck
    dotnet user-secrets set "AzureAiServices:Key" "{Your AI Services key}"
@@ -112,4 +113,16 @@ We recommend using the [Raspberry PI OS](https://www.raspberrypi.com/software/) 
    dotnet build
    dotnet run
    ```
+
+# Using Your Cogdeck
+The Cogdeck interface is designed with a dual-panel layout; the left panel offers a suite of Azure AI services, while the right panel serves as a type of workspace.
+
+## Controls
+Keyboard: 
+- `W` / `S` to select left-side menu items and `ENTER` to run the selected menu item.
+- `UP` / `DOWN` arrows to scroll the right-side workspace text.
+
+Cogdeck:
+- Use the momentary toggle switch to select left-side menu items
+- Use the momentary button to run the selected menu item.
 
