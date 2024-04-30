@@ -12,7 +12,8 @@ Read time: __ minutes
 Build time: __ minutes
 
 Cost:
-- **Hardware**  - Raspberry Pi 4 ([adafruit](https://www.adafruit.com/product/4295)), $35-$75
+- **Hardware**
+  - Raspberry Pi 4 ([adafruit](https://www.adafruit.com/product/4295)), $35-$75
   - Pi Foundation 7" display  ([adafruit](https://www.adafruit.com/product/2718])), $80 (*most any display should work*)
   - Momentary button
   - Momentary bi-directional toggle
@@ -102,7 +103,7 @@ We recommend using the [Raspberry PI OS](https://www.raspberrypi.com/software/) 
    
    > **Never store your keys in this file or any file in a repository.** If you accidentally expose an Azure service key, invalidate the exposed key by regenerating them on the `Keys and Endpoint` page of your resource.
    ```bash
-   cd ~/azure-cog-cyberdeck/src/cogdeck
+   cd ~/azure-ai-cyberdeck/src/cogdeck
    dotnet user-secrets set "AzureAiServices:Key" "{Your AI Services key}"
    dotnet user-secrets set "AzureAiServices:Endpoint" "{Your AI Services endpoint}"
    dotnet user-secrets set "AzureAiServices:Region" "{Your AI Services region}"
