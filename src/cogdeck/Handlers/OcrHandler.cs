@@ -1,14 +1,17 @@
-﻿using Azure;
+﻿using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using Azure;
 using Azure.AI.FormRecognizer.DocumentAnalysis;
 using cogdeck.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace cogdeck.Handlers
 {
+    /// <summary>
+    /// Handles the "Camera Capture (OCR)" command.
+    /// </summary>
     internal class OcrHandler : IHandler
     {
         public string MenuTitle => "Camera Capture (OCR)";
@@ -18,6 +21,9 @@ namespace cogdeck.Handlers
 
         private readonly DocumentAnalysisClient _client;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OcrHandler"/> class.
+        /// </summary>
         public OcrHandler(
             ILogger<OcrHandler> logger,
             IOptions<AzureCognitiveServicesOptions> options,
@@ -30,19 +36,24 @@ namespace cogdeck.Handlers
             _client = new DocumentAnalysisClient(new Uri(_options.Endpoint), new AzureKeyCredential(_options.Key));
         }
 
+        /// <summary>
+        /// Captures an image and analyzes it with optical character recogniztion (OCR).
+        /// </summary>
         public async Task<string> Execute(string input, CancellationToken cancellationToken)
         {
-            // Take snapshot
-            // libcamera-jpeg -o filepath
-            string filePath = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                "ocr-snaphot.jpg");
-            
+            string assemblyDirectory = Ensure.NotNullOrEmpty(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            string filePath = Path.Combine(assemblyDirectory, "ocr-snaphot.jpg");
+
             _statusManager.Status = "Capturing image...";
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                // TODO DEBUG Windows pre-captured 
-                filePath = @"C:\Users\adribona\OneDrive - Microsoft\Pictures\Camera Roll\WIN_20221115_15_51_12_Pro.jpg";
+                // TODO: Use a common image capture library for Windows, until then - use a pre-captured image.
+                filePath = Path.Combine(assemblyDirectory, "Handlers", "ocr_test_image.jpg");
+                if (!File.Exists(filePath))
+                {
+                    _statusManager.Status = "No image found.";
+                    return input;
+                }
             }
             else
             {
@@ -56,6 +67,7 @@ namespace cogdeck.Handlers
                 "prebuilt-read",
                 File.OpenRead(filePath));
 
+            // Get the result
             _statusManager.Status = "Analysis complete.";
             AnalyzeResult result = operation.Value;
             input = input += result.Content;
@@ -65,6 +77,10 @@ namespace cogdeck.Handlers
             return input;
         }
 
+        /// <summary>
+        /// Captures a still image from the camera on a Raspberry Pi or compatible linux-based device.
+        /// </summary>
+        /// <param name="filepath"></param>
         private static void CaptureCameraStillRPi(string filepath)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo()
@@ -73,8 +89,8 @@ namespace cogdeck.Handlers
                 Arguments = $"-o {filepath}"
             };
 
-            Process process = Process.Start(startInfo);
-            process.WaitForExit();
+            Process? process = Process.Start(startInfo);
+            process?.WaitForExit();
         }
     }
 }

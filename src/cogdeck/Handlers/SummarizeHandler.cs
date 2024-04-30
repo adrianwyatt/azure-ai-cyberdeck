@@ -1,35 +1,41 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using Azure;
+﻿using Azure;
 using Azure.AI.TextAnalytics;
 using cogdeck.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace cogdeck.Handlers
 {
+    /// <summary>
+    /// Handles the "Summarize" command.
+    /// </summary>
     internal class SummarizeHandler : IHandler
     {
         public string MenuTitle => "Summarize";
         private readonly StatusManager _statusManager;
         private readonly AzureCognitiveServicesOptions _options;
-        private readonly ILogger _logger;
 
         private readonly TextAnalyticsClient _textAnalyticsClient;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SummarizeHandler"/> class.
+        /// </summary>
         public SummarizeHandler(
-            ILogger<SummarizeHandler> logger,
             IOptions<AzureCognitiveServicesOptions> options,
             StatusManager statusManager)
         {
-            _logger = logger;
             _statusManager = statusManager;
             _options = options.Value;
 
+            // Create a new TextAnalyticsClient
             _textAnalyticsClient = new TextAnalyticsClient(new Uri(_options.Endpoint), new AzureKeyCredential(_options.Key));
         }
 
-        public async Task<string> Execute(string input,  CancellationToken cancellationToken)
+        /// <summary>
+        /// Summarizes the input.
+        /// </summary>
+        public async Task<string> Execute(string input, CancellationToken cancellationToken)
         {
+            // If the input is empty, update the status and return the input
             if (string.IsNullOrWhiteSpace(input))
             {
                 _statusManager.Status = "Nothing to summarize.";
@@ -38,6 +44,7 @@ namespace cogdeck.Handlers
 
             _statusManager.Status = "Summarizing...";
 
+            // Summarize the input
             AbstractiveSummarizeOperation operation = await _textAnalyticsClient.AbstractiveSummarizeAsync(
                 waitUntil: WaitUntil.Completed,
                 documents: new List<string> { input },
@@ -45,6 +52,7 @@ namespace cogdeck.Handlers
                 //language: "en", // TODO
                 cancellationToken: cancellationToken);
 
+            // Iterate over the results and join them together.
             string summary = string.Empty;
             await foreach (AbstractiveSummarizeResultCollection resultCollection in operation.Value)
             {

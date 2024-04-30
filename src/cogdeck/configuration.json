@@ -13,12 +13,43 @@
     "Key": "", // dotnet user-secrets set "AzureCognitiveServices:Key" "****"
     "Region": "", // dotnet user-secrets set "AzureCognitiveServices:Region" "****"
     "SpeechRecognitionLanguage": "en-US",
-    // For a list of available voices, see: https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support?tabs=stt-tts#text-to-speech
+    
     "SpeechSynthesisVoiceName": "en-US-DavisNeural"
   },
-  "ContentSafety": {  
+  "ContentSafety": {
     "Endpoint": "", // dotnet user-secrets set "ContentSafety:Endpoint" "****"
     "Key": "", // dotnet user-secrets set "ContentSafety:Key" "****"
     "Region": "" // dotnet user-secrets set "ContentSafety:Region" "****"
+  },
+  "LanguageManager": {
+    // For a list of available voices, see: https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support?tabs=stt-tts#text-to-speech
+    // Or use https://speech.microsoft.com/portal/voicegallery to preview voices
+    "Languages": [
+      {
+        "Language": "en",
+        "Locale": "en-US",
+        "Voice": "en-US-DavisNeural"
+      },
+      {
+        "Language": "fr",
+        "Locale": "fr-FR",
+        "Voice": "fr-FR-JeromeNeural"
+      },
+      {
+        "Language": "de",
+        "Locale": "de-DE",
+        "Voice": "de-DE-SeraphinaMultilingualNeural"
+      },
+      {
+        "Language": "es",
+        "Locale": "es-ES",
+        "Voice": "es-ES-AlvaroNeural"
+      },
+      {
+        "Language": "it",
+        "Locale": "it-IT",
+        "Voice": "it-IT-DiegoNeural"
+      }
+    ]
   }
 }

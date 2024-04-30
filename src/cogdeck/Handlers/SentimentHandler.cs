@@ -6,28 +6,34 @@ using Microsoft.Extensions.Options;
 
 namespace cogdeck.Handlers
 {
+    /// <summary>
+    /// Handles the "Sentiment" command.
+    /// </summary>
     internal class SentimentHandler : IHandler
     {
         public string MenuTitle => "Sentiment";
         private readonly StatusManager _statusManager;
         private readonly AzureCognitiveServicesOptions _options;
-        private readonly ILogger _logger;
 
         private readonly TextAnalyticsClient _textAnalyticsClient;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SentimentHandler"/> class.
+        /// </summary>
         public SentimentHandler(
-            ILogger<SentimentHandler> logger,
             IOptions<AzureCognitiveServicesOptions> options,
             StatusManager statusManager)
         {
-            _logger = logger;
             _statusManager = statusManager;
             _options = options.Value;
 
             _textAnalyticsClient = new TextAnalyticsClient(new Uri(_options.Endpoint), new AzureKeyCredential(_options.Key));
         }
 
-        public async Task<string> Execute(string input,  CancellationToken cancellationToken)
+        /// <summary>
+        /// Analyzes the sentiment of the input and updates the status.
+        /// </summary>
+        public async Task<string> Execute(string input, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(input))
             {
@@ -36,13 +42,15 @@ namespace cogdeck.Handlers
             }
 
             _statusManager.Status = "Analyzing sentiment...";
-            
-            Response<DocumentSentiment> response = await _textAnalyticsClient.AnalyzeSentimentAsync(
-                document:input,
-                //language:"en", // TODO
-                options:new AnalyzeSentimentOptions {  IncludeOpinionMining = false },                
-                cancellationToken:cancellationToken);
 
+            // Analyze the sentiment of the input
+            Response<DocumentSentiment> response = await _textAnalyticsClient.AnalyzeSentimentAsync(
+                document: input,
+                //language:"en", // TODO
+                options: new AnalyzeSentimentOptions { IncludeOpinionMining = false },
+                cancellationToken: cancellationToken);
+
+            // Update the status with the sentiment
             _statusManager.Status = $"Sentimate is {response.Value.Sentiment}.";
             return input;
         }

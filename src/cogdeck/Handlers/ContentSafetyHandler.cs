@@ -1,36 +1,39 @@
-﻿using System.Net;
-using Azure;
+﻿using Azure;
 using Azure.AI.ContentSafety;
-using Azure.AI.TextAnalytics;
 using cogdeck.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace cogdeck.Handlers
 {
+    /// <summary>
+    /// Handles the "Content Safety" command.
+    /// </summary>
     internal class ContentSafetyHandler : IHandler
     {
         public string MenuTitle => "Content Safety";
         private readonly StatusManager _statusManager;
         private readonly AzureContentSafetyOptions _options;
-        private readonly ILogger _logger;
 
         private readonly ContentSafetyClient _contentSafetyClient;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContentSafetyHandler"/> class.
+        /// </summary>
         public ContentSafetyHandler(
-            ILogger<ContentSafetyHandler> logger,
             IOptions<AzureContentSafetyOptions> options,
             StatusManager statusManager)
         {
-            _logger = logger;
             _statusManager = statusManager;
             _options = options.Value;
 
             _contentSafetyClient = new ContentSafetyClient(new Uri(_options.Endpoint), new AzureKeyCredential(_options.Key));
         }
 
-        public async Task<string> Execute(string input,  CancellationToken cancellationToken)
+        /// <summary>
+        /// Analyzes the content safety of the input and updates the status.
+        /// </summary>
+        public async Task<string> Execute(string input, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(input))
             {

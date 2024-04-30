@@ -1,54 +1,36 @@
 ﻿namespace cogdeck.Configuration
 {
     /// <summary>
-    /// Configuration options class for interacting with Azure Cognitive Services.
+    /// Configuration options class for interacting with Azure AI Services.
     /// </summary>
-    public class AzureCognitiveServicesOptions
+    public record AzureCognitiveServicesOptions
     {
         /// <summary>
         /// Location/region (e.g. WestUS3)
         /// </summary>
-        public string Region { get; set; }
+        public required string Region { get; init; }
 
         /// <summary>
         /// Access Key
         /// </summary>
-        public string Key { get; set; }
+        public required string Key { get; init; }
 
         /// <summary>
         /// Default language for speech recognition (speech-to-text).
         /// </summary>
-        public string SpeechRecognitionLanguage { get; set; }
+        public required string SpeechRecognitionLanguage { get; init; }
 
         /// <summary>
         /// Name of the voice to use for speaking (text-to-speech).
         /// </summary>
         /// <remarks>
-        /// https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support?tabs=stt-tts#text-to-speech
+        /// https://learn.microsoft.com/azure/cognitive-services/speech-service/language-support?tabs=stt-tts#text-to-speech
         /// </remarks>
-        public string SpeechSynthesisVoiceName { get; set; }
-
-        public string Endpoint { get; set; }
+        public required string SpeechSynthesisVoiceName { get; init; }
 
         /// <summary>
-        /// Validate options, throw an exception is any are invalid.
+        /// Azure AI services endpoint.
         /// </summary>
-        public void Validate()
-        {
-            if (string.IsNullOrWhiteSpace(Region))
-                throw new ArgumentException("Argument is invalid.", nameof(Region));
-
-            if (string.IsNullOrWhiteSpace(Key))
-                throw new ArgumentException("Argument is invalid.", nameof(Key));
-
-            if (string.IsNullOrWhiteSpace(SpeechRecognitionLanguage))
-                throw new ArgumentException("Argument is invalid.", nameof(SpeechRecognitionLanguage));
-
-            if (string.IsNullOrWhiteSpace(SpeechSynthesisVoiceName))
-                throw new ArgumentException("Argument is invalid.", nameof(SpeechSynthesisVoiceName));
-
-            if (string.IsNullOrWhiteSpace(Endpoint))
-                throw new ArgumentException("Argument is invalid.", nameof(Endpoint));
-        }
+        public required string Endpoint { get; init; }
     }
 }
