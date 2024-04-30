@@ -1,7 +1,10 @@
 # Cogdeck: An Azure AI Services Cyberdeck
-The Cogdeck is a relatively simple [cyberdeck](https://hackaday.com/2022/10/13/2022-cyberdeck-contest-picking-the-best-of-the-best/) to showcase the capabilities of Azure AI services. The version presented is built using a [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) and a [7-inch display](https://www.raspberrypi.com/products/raspberry-pi-touch-display/), though it can run on any system supporting [dotnet 8+](https://dotnet.microsoft.com/en-us/download/dotnet/8.0), such as Linux/Raspbian, macOS, and Windows. It can be equipped with a [camera module](https://www.raspberrypi.com/products/camera-module-3/), a microphone, and a speaker to enable interaction with the AI services.
+The Cogdeck is a [cyberdeck](https://hackaday.com/2022/10/13/2022-cyberdeck-contest-picking-the-best-of-the-best/) showcasing Azure AI services for makers, 
+leveraging a straightforward design. The current model features a [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) and a 
+[7-inch display](https://www.raspberrypi.com/products/raspberry-pi-touch-display/), and can run on any system that supports .NET 8 or higher, including 
+Linux/Raspbian, macOS, and Windows. For additional interactive capabilities, it can be outfitted with a camera module, microphone, and speaker.
 
-This repository includes the application, 3D models for the case, hardware list, and general instructions to build the Cogdeck.
+This repository includes the application, 3D models for the case, hardware list, and instructions to build and run the Cogdeck.
 
 ![Cogdeck](./cogdeck.png)
 
