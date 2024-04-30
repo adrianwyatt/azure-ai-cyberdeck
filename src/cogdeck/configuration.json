@@ -2,12 +2,12 @@
   // See the README for information on setting the Azure AI Services key.
   "AzureAiServices": {
     "Endpoint": "https://{Your AI Resource Name}.cognitiveservices.azure.com/", // (e.g. https://ai-cogdeck-wus2-001.cognitiveservices.azure.com/)
-    "Region": "{Your Resource Region}" // (e.g. WestUS2)
+    "Region": "{Your Resource Region}" // (e.g. westus2)
   },
   // See the README for information on setting the Azure Content Safety key.
   "ContentSafety": {
     "Endpoint": "https://{Your Safety Resource Name}.cognitiveservices.azure.com/", // (e.g. https://ai-cogdeck-wus2-001-safety.cognitiveservices.azure.com/)
-    "Region": "{Your Resource Region}" // (e.g. WestUS2)
+    "Region": "{Your Resource Region}" // (e.g. westus2)
   },
   "LanguageManager": {
     // For a list of available text-to-speech voices, see: https://learn.microsoft.com/azure/ai-services/speech-service/language-support?tabs=tts#text-to-speech
