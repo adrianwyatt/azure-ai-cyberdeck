@@ -1,4 +1,4 @@
-# Cogdeck: An Azure AI Services Cyberdeck
+# Cogdeck: Azure AI Services Cyberdeck
 The Cogdeck is a [cyberdeck](https://hackaday.com/2022/10/13/2022-cyberdeck-contest-picking-the-best-of-the-best/) showcasing Azure AI services for makers, 
 leveraging a straightforward design. The current model features a [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) and a 
 [7-inch display](https://www.raspberrypi.com/products/raspberry-pi-touch-display/), and can run on any system that supports .NET 8 or higher, including 
