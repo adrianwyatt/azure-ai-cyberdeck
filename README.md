@@ -27,14 +27,15 @@ Cost:
 	- Summarization, up to 5,000,000 characters per month (in blocks of 1000)
 	
 # Setup
-## Azure Account
+## Azure
+### Azure Account
 Create an Azure account, if you don't have one already.
 1. In a web browser, navigate to https://azure.microsoft.com/free and click on `Free` or `Pay-as-you-go`.
 1. Sign in with your Microsoft or GitHub account.
 1. After signing in, you will be prompted to enter some information.
    > Even though this is a free account, Azure may require credit card information. You will not be charged unless you change settings later.
 
-## Azure AI Services
+### Azure AI Services
 > Azure AI Services was formally called "Azure Cognitive Services", so you still may see that term in some places.
 
 1. Sign into your Azure account at https://portal.azure.com.
@@ -54,7 +55,7 @@ Create an Azure account, if you don't have one already.
 1. On the left side navigation bar, expand `Resourse Management`, then select `Keys and Endpoint`.
 1. Copy either of the two keys, the location/region, and endpoint. Save these values in a secure location for later.
 
-## Azure Content Safety
+### Azure Content Safety
 1. Sign into your Azure account at https://portal.azure.com.
 1. In the top-left menu, select `Create a resource`.
 1. In the seach box, type in `content safety` and select `Azure AI Content Safety`.
@@ -98,18 +99,26 @@ We recommend using the [Raspberry PI OS](https://www.raspberrypi.com/software/) 
    ```bash
    git clone https://github.com/adrianwyatt/azure-ai-cyberdeck.git
    ```
-1. Set your Azure service keys, endpoints, and regions.
-   > You may set alternatively your endpoints and regions in the `configuration.json` file. 
+1. Update your `configuration.json` with the Azure service endpoints and regions from the [Azure](#azure) sections above. For example:
+   ```json
+   {
+     "AzureAiServices": {
+	   "Endpoint": "https://ai-cogdeck-wus2-001.cognitiveservices.azure.com/",
+	   "Region": "westus2"
+	 },
+	 "ContentSafety": {
+	   "Endpoint": "https://ai-cogdeck-wus2-001-safety.cognitiveservices.azure.com/",
+	   "Region": "westus2"
+	 }
+   }
+   ```
+1. Set your Azure service keys as dotnet user-secrets.
    
-   > **Never store your keys in this file or any file in a repository.** If you accidentally expose an Azure service key, invalidate the exposed key by regenerating them on the `Keys and Endpoint` page of your resource.
+   > **Never store your keys in a repository.** If you accidentally expose an Azure service key, invalidate the exposed key by regenerating them on the `Keys and Endpoint` page of your resource.
    ```bash
    cd ~/azure-ai-cyberdeck/src/cogdeck
    dotnet user-secrets set "AzureAiServices:Key" "{Your AI Services key}"
-   dotnet user-secrets set "AzureAiServices:Endpoint" "{Your AI Services endpoint}"
-   dotnet user-secrets set "AzureAiServices:Region" "{Your AI Services region}"
    dotnet user-secrets set "ContentSafety:Key" "{Your Content Safety key}"
-   dotnet user-secrets set "ContentSafety:Endpoint" "{Your Content Safety endpoint}"
-   dotnet user-secrets set "ContentSafety:Region" "{Your Content Safety region}"
    ```
 1. Build and run the code!
    ```bash
