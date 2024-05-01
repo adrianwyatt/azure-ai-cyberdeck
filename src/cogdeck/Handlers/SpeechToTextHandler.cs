@@ -44,8 +44,8 @@ namespace cogdeck.Handlers
             // Create a speech recognizer for the current language.
             SpeechConfig speechConfig = SpeechConfig.FromSubscription(_options.Key, _options.Region);
             speechConfig.SpeechRecognitionLanguage = _languageManager.Get().Locale;
-            SpeechRecognizer speechRecognizer = new SpeechRecognizer(speechConfig, _audioConfig);
-            speechConfig.SetProperty(PropertyId.SpeechServiceResponse_PostProcessingOption, "2");
+            
+            using SpeechRecognizer speechRecognizer = new SpeechRecognizer(speechConfig, _audioConfig);
 
             string? recognizedText = null;
             _statusManager.Status = "Started listening...";
@@ -69,13 +69,13 @@ namespace cogdeck.Handlers
                 return input;
             }
 
-            // If the input is empty, return the recognized text
+            // If the input is empty, return the just the recognized text
             if (string.IsNullOrEmpty(input))
             {
                 return recognizedText;
             }
 
-            // Otherwise, append the recognized text to the input
+            // Otherwise, append the recognized text to the current input
             return string.Join(Environment.NewLine, input, recognizedText);
 
         }
