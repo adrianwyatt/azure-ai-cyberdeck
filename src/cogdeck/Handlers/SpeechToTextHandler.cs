@@ -32,7 +32,7 @@ namespace cogdeck.Handlers
             _languageManager = languageManager;
             _options = options.Value;
             
-            // Create an audio configuration
+            // Create an audio configuration for the default microphone input.
             _audioConfig = AudioConfig.FromDefaultMicrophoneInput();
         }
 
@@ -43,9 +43,9 @@ namespace cogdeck.Handlers
         {
             // Create a speech recognizer for the current language.
             SpeechConfig speechConfig = SpeechConfig.FromSubscription(_options.Key, _options.Region);
-            speechConfig.SpeechRecognitionLanguage = _languageManager.Get().Language;
-            speechConfig.SetProperty(PropertyId.SpeechServiceResponse_PostProcessingOption, "2");
+            speechConfig.SpeechRecognitionLanguage = _languageManager.Get().Locale;
             SpeechRecognizer speechRecognizer = new SpeechRecognizer(speechConfig, _audioConfig);
+            speechConfig.SetProperty(PropertyId.SpeechServiceResponse_PostProcessingOption, "2");
 
             string? recognizedText = null;
             _statusManager.Status = "Started listening...";
