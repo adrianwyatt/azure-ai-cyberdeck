@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using cogdeck.Handlers;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace cogdeck.HostedServices
 {
@@ -22,13 +23,16 @@ namespace cogdeck.HostedServices
         private List<string> rightWorkspaceLines = new List<string>();
         private readonly string title = $"Welcome to Cogdeck v{Assembly.GetEntryAssembly()?.GetName()?.Version?.Major}.{Assembly.GetEntryAssembly()?.GetName()?.Version?.Minor}";
         private readonly StatusManager _statusManager;
+        private readonly ILogger _logger;
 
         public ScreenRenderService(
             IEnumerable<IHandler> handlers,
-            StatusManager statusManager)
+            StatusManager statusManager,
+            ILogger<ScreenRenderService> logger)
         {
             _handlers = handlers.ToList();
             _statusManager = statusManager;
+            _logger = logger;
         }
 
         /// <summary>
@@ -136,7 +140,15 @@ namespace cogdeck.HostedServices
                     if (rightScroll > 0) rightScroll--;
                     break;
                 case ConsoleKey.Enter:
-                    rightWorkspace = await _handlers[leftSelect].Execute(rightWorkspace, cancellationToken);
+                    try
+                    {
+                        rightWorkspace = await _handlers[leftSelect].Execute(rightWorkspace, cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        _statusManager.Status = $"Oh no! {ex.GetType().Name}:{ex.Message}".Replace("\n","").Substring(0, Console.BufferWidth - 5) + "...";
+                        _logger.LogError(exception: ex, null);
+                    }
                     break;
             }
 

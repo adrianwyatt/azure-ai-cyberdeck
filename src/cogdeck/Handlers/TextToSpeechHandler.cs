@@ -49,24 +49,31 @@ namespace cogdeck.Handlers
             // Synthesize the input
             await speechSynthesizer.StartSpeakingTextAsync(input);
 
-            _statusManager.Status = "Press button to stop speaking...";
-
-            // Wait for either a key to be pressed or the synthesizing to complete normally.
-            // TODO support non-keyboard input
-            int stopReason = Task.WaitAny(
-                Task.Run(() => Console.ReadKey()),
-                _synthesizingCompleted.WaitAsync());
-
-            // Stop speaking if a key was pressed
-            if (stopReason == 0)
+            try
             {
-                await speechSynthesizer.StopSpeakingAsync();
-                _statusManager.Status = "Speaking stopped.";
+                _statusManager.Status = "Press button to stop speaking...";
+
+                // Wait for either a key to be pressed or the synthesizing to complete normally.
+                // TODO support non-keyboard input
+                int stopReason = Task.WaitAny(
+                    Task.Run(() => Console.ReadKey()),
+                    _synthesizingCompleted.WaitAsync());
+
+                // Stop speaking if a key was pressed
+                if (stopReason == 0)
+                {
+                    await speechSynthesizer.StopSpeakingAsync();
+                    _statusManager.Status = "Speaking stopped.";
+                }
+                else
+                {
+                    // Otherwise, the synthesizing completed normally
+                    _statusManager.Status = "Speaking completed.";
+                }
             }
-            else
+            finally
             {
-                // Otherwise, the synthesizing completed normally
-                _statusManager.Status = "Speaking completed.";
+                _synthesizingCompleted.Release();
             }
 
             return input;

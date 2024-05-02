@@ -1,16 +1,16 @@
 ﻿{
   // See the README for information on setting the Azure AI Services key.
   "AzureAiServices": {
-    "Endpoint": "https://{Your AI Resource Name}.cognitiveservices.azure.com/", // (e.g. https://ai-cogdeck-wus2-001.cognitiveservices.azure.com/)
-    "Region": "{Your Resource Region}" // (e.g. westus2)
+    "Endpoint": "https://{Your AI Resource Name}.cognitiveservices.azure.com/", // (e.g. https://mycogdeck-eus-001.cognitiveservices.azure.com/)
+    "Region": "{Your Resource Region}", // (e.g. eastus)
   },
   // See the README for information on setting the Azure Content Safety key.
   "ContentSafety": {
-    "Endpoint": "https://{Your Safety Resource Name}.cognitiveservices.azure.com/", // (e.g. https://ai-cogdeck-wus2-001-safety.cognitiveservices.azure.com/)
-    "Region": "{Your Resource Region}" // (e.g. westus2)
+    "Endpoint": "https://{Your Safety Resource Name}.cognitiveservices.azure.com/", // (e.g. https://mycogdeck-eus-001-safety.cognitiveservices.azure.com/)
+    "Region": "{Your Resource Region}" // (e.g. eastus)
   },
   "LanguageManager": {
-    // For a list of available text-to-speech voices, see: https://learn.microsoft.com/azure/ai-services/speech-service/language-support?tabs=tts#text-to-speech
+    // For a list of available voices, see: https://learn.microsoft.com/azure/ai-services/speech-service/language-support?tabs=tts#text-to-speech
     "Languages": [
       {
         "Language": "en",
