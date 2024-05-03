@@ -3,6 +3,9 @@ using System.Text.RegularExpressions;
 using cogdeck.Handlers;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Device.Gpio;
+using System.Threading;
+using System.Linq.Expressions;
 
 namespace cogdeck.HostedServices
 {
@@ -24,6 +27,10 @@ namespace cogdeck.HostedServices
         private readonly string title = $"Welcome to Cogdeck v{Assembly.GetEntryAssembly()?.GetName()?.Version?.Major}.{Assembly.GetEntryAssembly()?.GetName()?.Version?.Minor}";
         private readonly StatusManager _statusManager;
         private readonly ILogger _logger;
+        private readonly GpioController? _gpioController = null;
+
+        private readonly Queue<ConsoleKey> _inputQueue = new Queue<ConsoleKey>();
+        private readonly SemaphoreSlim _inputQueueSignal = new SemaphoreSlim(1, 1);
 
         public ScreenRenderService(
             IEnumerable<IHandler> handlers,
@@ -33,13 +40,37 @@ namespace cogdeck.HostedServices
             _handlers = handlers.ToList();
             _statusManager = statusManager;
             _logger = logger;
-        }
 
+            if (!OperatingSystem.IsWindows())
+            {
+                _gpioController = new GpioController();
+            }
+        }
         /// <summary>
         /// Starts the screen render service.
         /// </summary>
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            if (!OperatingSystem.IsWindows())
+            {
+                _gpioController?.OpenPin(2, PinMode.InputPullUp);
+                _gpioController?.RegisterCallbackForPinValueChangedEvent(2, PinEventTypes.Falling, (sender, args) => { _inputQueue.Enqueue(ConsoleKey.Enter); _inputQueueSignal.Release(); }); // HandleInputKey(ConsoleKey.Enter, cancellationToken).Wait());
+                _gpioController?.OpenPin(3, PinMode.InputPullUp);
+                _gpioController?.RegisterCallbackForPinValueChangedEvent(3, PinEventTypes.Falling, (sender, args) => { _inputQueue.Enqueue(ConsoleKey.W); _inputQueueSignal.Release(); }); //  HandleInputKey(ConsoleKey.W, cancellationToken).Wait());
+                _gpioController?.OpenPin(4, PinMode.InputPullUp);
+                _gpioController?.RegisterCallbackForPinValueChangedEvent(4, PinEventTypes.Falling, (sender, args) => { _inputQueue.Enqueue(ConsoleKey.S); _inputQueueSignal.Release(); }); //  HandleInputKey(ConsoleKey.S, cancellationToken).Wait());
+            }
+
+            Task keyTask = Task.Run(async () =>
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    _inputQueue.Enqueue(key.Key);
+                    _inputQueueSignal.Release();
+                }
+            });
+
             _task = ExecuteAsync(_cancellationTokenSource.Token);
             return Task.CompletedTask;
         }
@@ -70,7 +101,11 @@ namespace cogdeck.HostedServices
                 RenderLeftMenu();
                 RenderRightWorkspace();
                 _statusManager.RenderStatus();
-                await HandleInput(cancellationToken);
+                await _inputQueueSignal.WaitAsync();
+                while (_inputQueue.Count > 0)
+                {
+                    await HandleInputKey(_inputQueue.Dequeue(), cancellationToken);
+                }
             }
         }
 
@@ -118,14 +153,9 @@ namespace cogdeck.HostedServices
             }
         }
 
-        /// <summary>
-        /// Handles user input.
-        /// </summary>
-        private async Task HandleInput(CancellationToken cancellationToken)
+        private async Task HandleInputKey(ConsoleKey key, CancellationToken cancellationToken)
         {
-            Console.SetCursorPosition(Console.BufferWidth - 1, Console.BufferHeight - 1);
-            ConsoleKeyInfo key = Console.ReadKey();
-            switch (key.Key)
+            switch (key)
             {
                 case ConsoleKey.W:
                     if (leftSelect > 0) leftSelect--;
@@ -146,13 +176,11 @@ namespace cogdeck.HostedServices
                     }
                     catch (Exception ex)
                     {
-                        _statusManager.Status = $"Oh no! {ex.GetType().Name}:{ex.Message}".Replace("\n","").Substring(0, Console.BufferWidth - 5) + "...";
+                        _statusManager.Status = $"Oh no! {ex.GetType().Name}:{ex.Message}".Replace("\n", "").Substring(0, Console.BufferWidth - 5) + "...";
                         _logger.LogError(exception: ex, null);
                     }
                     break;
             }
-
-            // TODO hardware input
         }
 
         /// <summary>
